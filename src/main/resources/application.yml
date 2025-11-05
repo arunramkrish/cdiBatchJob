@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: cdi-batch-job
+  
+  # PostgreSQL Configuration for Job Repository
+  datasource:
+    url: jdbc:postgresql://localhost:5432/batch_job_repository
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+  
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  
+  # Spring Batch Job Repository Configuration
+  batch:
+    job:
+      enabled: true
+      names: elasticsearchSyncJob
+    jdbc:
+      initialize-schema: always
+      table-prefix: BATCH_
+  
+  # MongoDB Configuration
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/cdi_database}
+      database: ${MONGODB_DATABASE:cdi_database}
+
+# Elasticsearch Configuration
+elasticsearch:
+  serverUrl: ${ELASTICSEARCH_SERVER_URL:http://localhost:9200}
+  apikey: ${ELASTICSEARCH_APIKEY}
+  index:
+    name: ${ELASTICSEARCH_INDEX_NAME:cdi_content}
+    alias: ${ELASTICSEARCH_ALIAS:cdi_content_alias}
+
+# Batch Job Configuration
+batch:
+  job:
+    chunk-size: 1000
+
+# Logging
+logging:
+  level:
+    root: INFO
+    org.springframework.batch: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    com.patientpoint: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
