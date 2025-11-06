@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class JobRunnerTest {
+class CdiJobLauncherTest {
     
     @Mock
     private JobLauncher jobLauncher;
@@ -29,7 +29,7 @@ class JobRunnerTest {
     private JobExecution jobExecution;
     
     @InjectMocks
-    private JobRunner jobRunner;
+    private CdiJobLauncher cdiJobLauncher;
     
     @Test
     void testRun_ShouldLaunchJob() throws Exception {
@@ -37,7 +37,7 @@ class JobRunnerTest {
         when(jobLauncher.run(any(Job.class), any(JobParameters.class))).thenReturn(jobExecution);
         
         // When
-        jobRunner.run();
+        cdiJobLauncher.run();
         
         // Then
         verify(jobLauncher, times(1)).run(eq(elasticsearchSyncJob), any(JobParameters.class));
@@ -51,7 +51,7 @@ class JobRunnerTest {
         
         // When & Then
         assertThrows(RuntimeException.class, () -> {
-            jobRunner.run();
+            cdiJobLauncher.run();
         });
         
         verify(jobLauncher, times(1)).run(eq(elasticsearchSyncJob), any(JobParameters.class));
@@ -63,7 +63,7 @@ class JobRunnerTest {
         when(jobLauncher.run(any(Job.class), any(JobParameters.class))).thenReturn(jobExecution);
         
         // When
-        jobRunner.run();
+        cdiJobLauncher.run();
         
         // Then
         verify(jobLauncher).run(eq(elasticsearchSyncJob), any(JobParameters.class));

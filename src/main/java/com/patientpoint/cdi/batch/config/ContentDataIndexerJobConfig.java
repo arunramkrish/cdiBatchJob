@@ -1,8 +1,8 @@
 package com.patientpoint.cdi.batch.config;
 
 import com.patientpoint.cdi.batch.listener.JobCompletionListener;
-import com.patientpoint.cdi.batch.processor.MongoToElasticsearchProcessor;
-import com.patientpoint.cdi.batch.reader.MongoContentItemReader;
+import com.patientpoint.cdi.batch.processor.ContentDataTransformer;
+import com.patientpoint.cdi.batch.reader.ContentDataReader;
 import com.patientpoint.cdi.batch.tasklet.ElasticsearchIndexFlipTasklet;
 import com.patientpoint.cdi.batch.tasklet.ElasticsearchIndexInitTasklet;
 import com.patientpoint.cdi.batch.tasklet.ElasticsearchValidationTasklet;
@@ -20,12 +20,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public class BatchJobConfig {
+public class ContentDataIndexerJobConfig {
     
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
-    private final MongoContentItemReader reader;
-    private final MongoToElasticsearchProcessor processor;
+    private final ContentDataReader reader;
+    private final ContentDataTransformer processor;
     private final ElasticsearchItemWriter writer;
     private final ElasticsearchIndexInitTasklet indexInitTasklet;
     private final ElasticsearchValidationTasklet validationTasklet;
@@ -35,10 +35,10 @@ public class BatchJobConfig {
     @Value("${batch.job.chunk-size:1000}")
     private int chunkSize;
     
-    public BatchJobConfig(JobRepository jobRepository,
+    public ContentDataIndexerJobConfig(JobRepository jobRepository,
                          PlatformTransactionManager transactionManager,
-                         MongoContentItemReader reader,
-                         MongoToElasticsearchProcessor processor,
+                         ContentDataReader reader,
+                         ContentDataTransformer processor,
                          ElasticsearchItemWriter writer,
                          ElasticsearchIndexInitTasklet indexInitTasklet,
                          ElasticsearchValidationTasklet validationTasklet,

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class MongoToElasticsearchProcessor implements ItemProcessor<EditorialContent, ElasticsearchContent> {
+public class ContentDataTransformer implements ItemProcessor<EditorialContent, ElasticsearchContent> {
     
     @Override
     public ElasticsearchContent process(EditorialContent editorialContent) throws Exception {

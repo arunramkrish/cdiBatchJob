@@ -3,7 +3,7 @@ package com.patientpoint.cdi.batch.service;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.CountRequest;
 import co.elastic.clients.elasticsearch.core.CountResponse;
-import com.patientpoint.cdi.repository.MongoContentRepository;
+import com.patientpoint.cdi.repository.EditorialContentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ class ElasticsearchValidationServiceTest {
     private ElasticsearchClient elasticsearchClient;
     
     @Mock
-    private MongoContentRepository mongoContentRepository;
+    private EditorialContentRepository editorialContentRepository;
     
     @Mock
     private CountResponse countResponse;
@@ -31,7 +31,7 @@ class ElasticsearchValidationServiceTest {
     
     @BeforeEach
     void setUp() {
-        service = new ElasticsearchValidationService(elasticsearchClient, mongoContentRepository, INDEX_NAME);
+        service = new ElasticsearchValidationService(elasticsearchClient, editorialContentRepository, INDEX_NAME);
     }
     
     @Test
@@ -40,7 +40,7 @@ class ElasticsearchValidationServiceTest {
         long mongoCount = 100L;
         long elasticsearchCount = 100L;
         
-        when(mongoContentRepository.count()).thenReturn(mongoCount);
+        when(editorialContentRepository.count()).thenReturn(mongoCount);
         when(elasticsearchClient.count(any(CountRequest.class))).thenReturn(countResponse);
         when(countResponse.count()).thenReturn(elasticsearchCount);
         
@@ -49,7 +49,7 @@ class ElasticsearchValidationServiceTest {
         
         // Then
         assertTrue(result);
-        verify(mongoContentRepository, times(1)).count();
+        verify(editorialContentRepository, times(1)).count();
         verify(elasticsearchClient, times(1)).count(any(CountRequest.class));
     }
     
@@ -59,7 +59,7 @@ class ElasticsearchValidationServiceTest {
         long mongoCount = 100L;
         long elasticsearchCount = 95L;
         
-        when(mongoContentRepository.count()).thenReturn(mongoCount);
+        when(editorialContentRepository.count()).thenReturn(mongoCount);
         when(elasticsearchClient.count(any(CountRequest.class))).thenReturn(countResponse);
         when(countResponse.count()).thenReturn(elasticsearchCount);
         
@@ -68,7 +68,7 @@ class ElasticsearchValidationServiceTest {
         
         // Then
         assertFalse(result);
-        verify(mongoContentRepository, times(1)).count();
+        verify(editorialContentRepository, times(1)).count();
         verify(elasticsearchClient, times(1)).count(any(CountRequest.class));
     }
     
@@ -82,7 +82,7 @@ class ElasticsearchValidationServiceTest {
         
         // Then
         assertFalse(result);
-        verify(mongoContentRepository, times(1)).count();
+        verify(editorialContentRepository, times(1)).count();
     }
     
     @Test
@@ -90,7 +90,7 @@ class ElasticsearchValidationServiceTest {
         // Given
         long mongoCount = 100L;
         
-        when(mongoContentRepository.count()).thenReturn(mongoCount);
+        when(editorialContentRepository.count()).thenReturn(mongoCount);
         when(elasticsearchClient.count(any(CountRequest.class))).thenThrow(new RuntimeException("Elasticsearch error"));
         
         // When
@@ -98,7 +98,7 @@ class ElasticsearchValidationServiceTest {
         
         // Then
         assertFalse(result);
-        verify(mongoContentRepository, times(1)).count();
+        verify(editorialContentRepository, times(1)).count();
         verify(elasticsearchClient, times(1)).count(any(CountRequest.class));
     }
     
@@ -108,7 +108,7 @@ class ElasticsearchValidationServiceTest {
         long mongoCount = 0L;
         long elasticsearchCount = 0L;
         
-        when(mongoContentRepository.count()).thenReturn(mongoCount);
+        when(editorialContentRepository.count()).thenReturn(mongoCount);
         when(elasticsearchClient.count(any(CountRequest.class))).thenReturn(countResponse);
         when(countResponse.count()).thenReturn(elasticsearchCount);
         
@@ -125,7 +125,7 @@ class ElasticsearchValidationServiceTest {
         long mongoCount = 50L;
         long elasticsearchCount = 50L;
         
-        when(mongoContentRepository.count()).thenReturn(mongoCount);
+        when(editorialContentRepository.count()).thenReturn(mongoCount);
         when(elasticsearchClient.count(any(CountRequest.class))).thenReturn(countResponse);
         when(countResponse.count()).thenReturn(elasticsearchCount);
         

@@ -1,7 +1,7 @@
 package com.patientpoint.cdi.batch.reader;
 
 import com.patientpoint.cdi.model.EditorialContent;
-import com.patientpoint.cdi.repository.MongoContentRepository;
+import com.patientpoint.cdi.repository.EditorialContentRepository;
 import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -13,16 +13,16 @@ import java.util.Iterator;
 import java.util.List;
 
 @Component
-public class MongoContentItemReader extends AbstractPaginatedDataItemReader<EditorialContent> {
+public class ContentDataReader extends AbstractPaginatedDataItemReader<EditorialContent> {
     
-    private final MongoContentRepository repository;
+    private final EditorialContentRepository repository;
     private final int pageSize;
     
-    public MongoContentItemReader(MongoContentRepository repository, 
+    public ContentDataReader(EditorialContentRepository repository, 
                                   @Value("${batch.job.chunk-size:1000}") int pageSize) {
         this.repository = repository;
         this.pageSize = pageSize;
-        setName("mongoContentItemReader");
+        setName("contentDataReader");
     }
     
     @Override

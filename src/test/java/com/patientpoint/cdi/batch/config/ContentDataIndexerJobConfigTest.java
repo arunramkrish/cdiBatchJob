@@ -1,8 +1,8 @@
 package com.patientpoint.cdi.batch.config;
 
 import com.patientpoint.cdi.batch.listener.JobCompletionListener;
-import com.patientpoint.cdi.batch.processor.MongoToElasticsearchProcessor;
-import com.patientpoint.cdi.batch.reader.MongoContentItemReader;
+import com.patientpoint.cdi.batch.processor.ContentDataTransformer;
+import com.patientpoint.cdi.batch.reader.ContentDataReader;
 import com.patientpoint.cdi.batch.tasklet.ElasticsearchIndexFlipTasklet;
 import com.patientpoint.cdi.batch.tasklet.ElasticsearchIndexInitTasklet;
 import com.patientpoint.cdi.batch.tasklet.ElasticsearchValidationTasklet;
@@ -21,7 +21,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class BatchJobConfigTest {
+class ContentDataIndexerJobConfigTest {
     
     @Mock
     private JobRepository jobRepository;
@@ -30,10 +30,10 @@ class BatchJobConfigTest {
     private PlatformTransactionManager transactionManager;
     
     @Mock
-    private MongoContentItemReader reader;
+    private ContentDataReader reader;
     
     @Mock
-    private MongoToElasticsearchProcessor processor;
+    private ContentDataTransformer processor;
     
     @Mock
     private ElasticsearchItemWriter writer;
@@ -50,12 +50,12 @@ class BatchJobConfigTest {
     @Mock
     private JobCompletionListener jobCompletionListener;
     
-    private BatchJobConfig batchJobConfig;
+    private ContentDataIndexerJobConfig contentDataIndexerJobConfig;
     private static final int CHUNK_SIZE = 100;
     
     @BeforeEach
     void setUp() {
-        batchJobConfig = new BatchJobConfig(
+        contentDataIndexerJobConfig = new ContentDataIndexerJobConfig(
             jobRepository,
             transactionManager,
             reader,
@@ -66,13 +66,13 @@ class BatchJobConfigTest {
             indexFlipTasklet,
             jobCompletionListener
         );
-        ReflectionTestUtils.setField(batchJobConfig, "chunkSize", CHUNK_SIZE);
+        ReflectionTestUtils.setField(contentDataIndexerJobConfig, "chunkSize", CHUNK_SIZE);
     }
     
     @Test
     void testElasticsearchIndexInitStep_ShouldBeCreated() {
         // When
-        Step step = batchJobConfig.elasticsearchIndexInitStep();
+        Step step = contentDataIndexerJobConfig.elasticsearchIndexInitStep();
         
         // Then
         assertNotNull(step);
@@ -82,7 +82,7 @@ class BatchJobConfigTest {
     @Test
     void testElasticsearchSyncStep_ShouldBeCreated() {
         // When
-        Step step = batchJobConfig.elasticsearchSyncStep();
+        Step step = contentDataIndexerJobConfig.elasticsearchSyncStep();
         
         // Then
         assertNotNull(step);
@@ -92,7 +92,7 @@ class BatchJobConfigTest {
     @Test
     void testElasticsearchValidationStep_ShouldBeCreated() {
         // When
-        Step step = batchJobConfig.elasticsearchValidationStep();
+        Step step = contentDataIndexerJobConfig.elasticsearchValidationStep();
         
         // Then
         assertNotNull(step);
@@ -102,7 +102,7 @@ class BatchJobConfigTest {
     @Test
     void testElasticsearchIndexFlipStep_ShouldBeCreated() {
         // When
-        Step step = batchJobConfig.elasticsearchIndexFlipStep();
+        Step step = contentDataIndexerJobConfig.elasticsearchIndexFlipStep();
         
         // Then
         assertNotNull(step);
@@ -112,7 +112,7 @@ class BatchJobConfigTest {
     @Test
     void testElasticsearchSyncJob_ShouldBeCreated() {
         // When
-        Job job = batchJobConfig.elasticsearchSyncJob();
+        Job job = contentDataIndexerJobConfig.elasticsearchSyncJob();
         
         // Then
         assertNotNull(job);
@@ -122,7 +122,7 @@ class BatchJobConfigTest {
     @Test
     void testElasticsearchSyncJob_ShouldHaveAllSteps() {
         // When
-        Job job = batchJobConfig.elasticsearchSyncJob();
+        Job job = contentDataIndexerJobConfig.elasticsearchSyncJob();
         
         // Then
         assertNotNull(job);

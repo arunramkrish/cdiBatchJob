@@ -11,9 +11,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JobRunner implements CommandLineRunner {
+public class CdiJobLauncher implements CommandLineRunner {
     
-    private static final Logger logger = LoggerFactory.getLogger(JobRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(CdiJobLauncher.class);
     
     @Autowired
     private JobLauncher jobLauncher;

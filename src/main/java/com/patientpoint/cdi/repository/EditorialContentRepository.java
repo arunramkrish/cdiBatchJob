@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface MongoContentRepository extends MongoRepository<EditorialContent, UUID> {
+public interface EditorialContentRepository extends MongoRepository<EditorialContent, UUID> {
     // All methods (findAll, count, etc.) are inherited from MongoRepository
     // which extends PagingAndSortingRepository and CrudRepository
 }

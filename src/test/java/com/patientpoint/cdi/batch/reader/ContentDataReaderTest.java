@@ -1,7 +1,7 @@
 package com.patientpoint.cdi.batch.reader;
 
 import com.patientpoint.cdi.model.EditorialContent;
-import com.patientpoint.cdi.repository.MongoContentRepository;
+import com.patientpoint.cdi.repository.EditorialContentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,17 +23,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MongoContentItemReaderTest {
+class ContentDataReaderTest {
     
     @Mock
-    private MongoContentRepository repository;
+    private EditorialContentRepository repository;
     
-    private MongoContentItemReader reader;
+    private ContentDataReader reader;
     private static final int PAGE_SIZE = 10;
     
     @BeforeEach
     void setUp() {
-        reader = new MongoContentItemReader(repository, PAGE_SIZE);
+        reader = new ContentDataReader(repository, PAGE_SIZE);
     }
     
     @Test

@@ -16,10 +16,10 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class MongoToElasticsearchProcessorTest {
+class ContentDataTransformerTest {
     
     @InjectMocks
-    private MongoToElasticsearchProcessor processor;
+    private ContentDataTransformer transformer;
     
     private EditorialContent editorialContent;
     private UUID testId;
@@ -46,7 +46,7 @@ class MongoToElasticsearchProcessorTest {
     @Test
     void testProcess_ShouldTransformEditorialContentToElasticsearchContent() throws Exception {
         // When
-        ElasticsearchContent result = processor.process(editorialContent);
+        ElasticsearchContent result = transformer.process(editorialContent);
         
         // Then
         assertNotNull(result);
@@ -66,7 +66,7 @@ class MongoToElasticsearchProcessorTest {
         editorialContent.setId(null);
         
         // When
-        ElasticsearchContent result = processor.process(editorialContent);
+        ElasticsearchContent result = transformer.process(editorialContent);
         
         // Then
         assertNotNull(result);
@@ -76,7 +76,7 @@ class MongoToElasticsearchProcessorTest {
     @Test
     void testProcess_ShouldSetIndexedAtTimestamp() throws Exception {
         // When
-        ElasticsearchContent result = processor.process(editorialContent);
+        ElasticsearchContent result = transformer.process(editorialContent);
         
         // Then
         assertNotNull(result.getIndexedAt());
@@ -92,7 +92,7 @@ class MongoToElasticsearchProcessorTest {
         editorialContent.setStatus("INACTIVE");
         
         // When
-        ElasticsearchContent result = processor.process(editorialContent);
+        ElasticsearchContent result = transformer.process(editorialContent);
         
         // Then
         assertEquals("Another Title", result.getTitle());

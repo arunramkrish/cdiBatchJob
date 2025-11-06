@@ -2,7 +2,7 @@ package com.patientpoint.cdi.batch.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.CountRequest;
-import com.patientpoint.cdi.repository.MongoContentRepository;
+import com.patientpoint.cdi.repository.EditorialContentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,20 +14,20 @@ public class ElasticsearchValidationService {
     private static final Logger logger = LoggerFactory.getLogger(ElasticsearchValidationService.class);
     
     private final ElasticsearchClient elasticsearchClient;
-    private final MongoContentRepository mongoContentRepository;
+    private final EditorialContentRepository editorialContentRepository;
     private final String indexName;
     
     public ElasticsearchValidationService(ElasticsearchClient elasticsearchClient,
-                                          MongoContentRepository mongoContentRepository,
+                                          EditorialContentRepository editorialContentRepository,
                                           @Value("${elasticsearch.index.name}") String indexName) {
         this.elasticsearchClient = elasticsearchClient;
-        this.mongoContentRepository = mongoContentRepository;
+        this.editorialContentRepository = editorialContentRepository;
         this.indexName = indexName;
     }
     
     public boolean validateTransfer() {
         try {
-            long mongoCount = mongoContentRepository.count();
+            long mongoCount = editorialContentRepository.count();
             logger.info("MongoDB document count: {}", mongoCount);
             
             CountRequest countRequest = CountRequest.of(c -> c.index(indexName));
