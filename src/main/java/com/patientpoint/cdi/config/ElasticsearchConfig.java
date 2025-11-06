@@ -28,6 +28,8 @@ public class ElasticsearchConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         
+        // Build Elasticsearch client with API key
+        // Note: When Elasticsearch security is disabled, the API key header is sent but ignored
         return ElasticsearchClient.of(b -> b
             .host(uri)
             .apiKey(apikey)
