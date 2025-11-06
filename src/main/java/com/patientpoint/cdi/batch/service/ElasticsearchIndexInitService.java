@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.PostConstruct;
-
 @Service
 public class ElasticsearchIndexInitService {
     
@@ -24,7 +22,6 @@ public class ElasticsearchIndexInitService {
         this.indexName = indexName;
     }
     
-    @PostConstruct
     public void initializeIndex() {
         try {
             ExistsRequest existsRequest = ExistsRequest.of(e -> e.index(indexName));
