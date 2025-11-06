@@ -10,7 +10,7 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -63,8 +63,8 @@ class JobCompletionListenerTest {
     @Test
     void testAfterJob_ShouldLogExecutionTimeWhenTimesAreAvailable() {
         // Given
-        Instant startTime = Instant.now().minusSeconds(5);
-        Instant endTime = Instant.now();
+        LocalDateTime startTime = LocalDateTime.now().minusSeconds(5);
+        LocalDateTime endTime = LocalDateTime.now();
         when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
         when(jobExecution.getStartTime()).thenReturn(startTime);
         when(jobExecution.getEndTime()).thenReturn(endTime);
@@ -81,7 +81,7 @@ class JobCompletionListenerTest {
     @Test
     void testAfterJob_ShouldHandleNullStartTime() {
         // Given
-        Instant endTime = Instant.now();
+        LocalDateTime endTime = LocalDateTime.now();
         when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
         when(jobExecution.getStartTime()).thenReturn(null);
         when(jobExecution.getEndTime()).thenReturn(endTime);
@@ -98,7 +98,7 @@ class JobCompletionListenerTest {
     @Test
     void testAfterJob_ShouldHandleNullEndTime() {
         // Given
-        Instant startTime = Instant.now();
+        LocalDateTime startTime = LocalDateTime.now();
         when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
         when(jobExecution.getStartTime()).thenReturn(startTime);
         when(jobExecution.getEndTime()).thenReturn(null);
