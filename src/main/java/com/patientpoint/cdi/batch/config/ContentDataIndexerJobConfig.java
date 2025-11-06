@@ -87,8 +87,8 @@ public class ContentDataIndexerJobConfig {
     }
     
     @Bean
-    public Job elasticsearchSyncJob() {
-        return new JobBuilder("elasticsearchSyncJob", jobRepository)
+    public Job cdiJob() {
+        return new JobBuilder("cdiJob", jobRepository)
             .start(elasticsearchIndexInitStep())
             .next(elasticsearchSyncStep())
             .next(elasticsearchValidationStep())

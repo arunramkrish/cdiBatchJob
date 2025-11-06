@@ -23,7 +23,7 @@ class CdiJobLauncherTest {
     private JobLauncher jobLauncher;
     
     @Mock
-    private Job elasticsearchSyncJob;
+    private Job cdiJob;
     
     @Mock
     private JobExecution jobExecution;
@@ -40,7 +40,7 @@ class CdiJobLauncherTest {
         cdiJobLauncher.run();
         
         // Then
-        verify(jobLauncher, times(1)).run(eq(elasticsearchSyncJob), any(JobParameters.class));
+        verify(jobLauncher, times(1)).run(eq(cdiJob), any(JobParameters.class));
     }
     
     @Test
@@ -54,7 +54,7 @@ class CdiJobLauncherTest {
             cdiJobLauncher.run();
         });
         
-        verify(jobLauncher, times(1)).run(eq(elasticsearchSyncJob), any(JobParameters.class));
+        verify(jobLauncher, times(1)).run(eq(cdiJob), any(JobParameters.class));
     }
     
     @Test
@@ -66,7 +66,7 @@ class CdiJobLauncherTest {
         cdiJobLauncher.run();
         
         // Then
-        verify(jobLauncher).run(eq(elasticsearchSyncJob), any(JobParameters.class));
+        verify(jobLauncher).run(eq(cdiJob), any(JobParameters.class));
         // JobParameters should contain a timestamp
     }
 }

@@ -19,18 +19,18 @@ public class CdiJobLauncher implements CommandLineRunner {
     private JobLauncher jobLauncher;
     
     @Autowired
-    private Job elasticsearchSyncJob;
+    private Job cdiJob;
     
     @Override
     public void run(String... args) throws Exception {
-        logger.info("Starting Elasticsearch sync job...");
+        logger.info("Starting CDI job...");
         
         JobParameters jobParameters = new JobParametersBuilder()
             .addLong("timestamp", System.currentTimeMillis())
             .toJobParameters();
         
         try {
-            jobLauncher.run(elasticsearchSyncJob, jobParameters);
+            jobLauncher.run(cdiJob, jobParameters);
             logger.info("Job execution completed");
         } catch (Exception e) {
             logger.error("Job execution failed", e);

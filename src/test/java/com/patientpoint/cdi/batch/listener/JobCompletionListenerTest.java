@@ -36,7 +36,7 @@ class JobCompletionListenerTest {
     @Test
     void testBeforeJob_ShouldLogJobStart() {
         // Given
-        when(jobInstance.getJobName()).thenReturn("elasticsearchSyncJob");
+        when(jobInstance.getJobName()).thenReturn("cdiJob");
         
         // When
         listener.beforeJob(jobExecution);

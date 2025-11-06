@@ -27,7 +27,7 @@ spring:
   batch:
     job:
       enabled: true
-      names: elasticsearchSyncJob
+      names: cdiJob
     jdbc:
       initialize-schema: always
       table-prefix: BATCH_

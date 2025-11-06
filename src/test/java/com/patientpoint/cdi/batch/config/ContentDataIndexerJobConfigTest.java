@@ -110,19 +110,19 @@ class ContentDataIndexerJobConfigTest {
     }
     
     @Test
-    void testElasticsearchSyncJob_ShouldBeCreated() {
+    void testCdiJob_ShouldBeCreated() {
         // When
-        Job job = contentDataIndexerJobConfig.elasticsearchSyncJob();
+        Job job = contentDataIndexerJobConfig.cdiJob();
         
         // Then
         assertNotNull(job);
-        assertEquals("elasticsearchSyncJob", job.getName());
+        assertEquals("cdiJob", job.getName());
     }
     
     @Test
-    void testElasticsearchSyncJob_ShouldHaveAllSteps() {
+    void testCdiJob_ShouldHaveAllSteps() {
         // When
-        Job job = contentDataIndexerJobConfig.elasticsearchSyncJob();
+        Job job = contentDataIndexerJobConfig.cdiJob();
         
         // Then
         assertNotNull(job);
