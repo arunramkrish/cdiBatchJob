@@ -75,7 +75,7 @@ class ElasticsearchValidationServiceTest {
     @Test
     void testValidateTransfer_ShouldReturnFalseWhenExceptionOccurs() throws Exception {
         // Given
-        when(mongoContentRepository.count()).thenThrow(new RuntimeException("Database error"));
+        when(editorialContentRepository.count()).thenThrow(new RuntimeException("Database error"));
         
         // When
         boolean result = service.validateTransfer();

@@ -6,6 +6,9 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.Instant;
+
 @Component
 public class JobCompletionListener implements JobExecutionListener {
     
@@ -19,9 +22,11 @@ public class JobCompletionListener implements JobExecutionListener {
     @Override
     public void afterJob(JobExecution jobExecution) {
         logger.info("Job completed with status: {}", jobExecution.getStatus());
-        if (jobExecution.getEndTime() != null && jobExecution.getStartTime() != null) {
-            logger.info("Job execution time: {} ms", 
-                jobExecution.getEndTime().getTime() - jobExecution.getStartTime().getTime());
+        Instant endTime = jobExecution.getEndTime();
+        Instant startTime = jobExecution.getStartTime();
+        if (endTime != null && startTime != null) {
+            Duration duration = Duration.between(startTime, endTime);
+            logger.info("Job execution time: {} ms", duration.toMillis());
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.patientpoint.cdi.batch.listener;
 
-import com.patientpoint.cdi.batch.service.ElasticsearchIndexFlipService;
-import com.patientpoint.cdi.batch.service.ElasticsearchValidationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInstance;
+
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,13 +19,10 @@ import static org.mockito.Mockito.*;
 class JobCompletionListenerTest {
     
     @Mock
-    private ElasticsearchValidationService validationService;
-    
-    @Mock
-    private ElasticsearchIndexFlipService indexFlipService;
-    
-    @Mock
     private JobExecution jobExecution;
+    
+    @Mock
+    private JobInstance jobInstance;
     
     @InjectMocks
     private JobCompletionListener listener;
@@ -32,52 +30,90 @@ class JobCompletionListenerTest {
     @BeforeEach
     void setUp() {
         when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
+        when(jobExecution.getJobInstance()).thenReturn(jobInstance);
     }
     
     @Test
-    void testAfterJob_ShouldFlipIndexWhenValidationPasses() {
+    void testBeforeJob_ShouldLogJobStart() {
         // Given
-        when(validationService.validateTransfer()).thenReturn(true);
+        when(jobInstance.getJobName()).thenReturn("elasticsearchSyncJob");
+        
+        // When
+        listener.beforeJob(jobExecution);
+        
+        // Then
+        verify(jobExecution, times(1)).getJobInstance();
+        verify(jobInstance, times(1)).getJobName();
+    }
+    
+    @Test
+    void testAfterJob_ShouldLogJobCompletion() {
+        // Given
+        when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
         
         // When
         listener.afterJob(jobExecution);
         
         // Then
-        verify(validationService, times(1)).validateTransfer();
-        verify(indexFlipService, times(1)).flipIndex();
+        verify(jobExecution, atLeastOnce()).getStatus();
+        // Logger calls are not easily verifiable, but we can ensure the method executes
+        assertNotNull(jobExecution);
     }
     
     @Test
-    void testAfterJob_ShouldNotFlipIndexWhenValidationFails() {
+    void testAfterJob_ShouldLogExecutionTimeWhenTimesAreAvailable() {
         // Given
-        when(validationService.validateTransfer()).thenReturn(false);
+        Instant startTime = Instant.now().minusSeconds(5);
+        Instant endTime = Instant.now();
+        when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
+        when(jobExecution.getStartTime()).thenReturn(startTime);
+        when(jobExecution.getEndTime()).thenReturn(endTime);
         
         // When
         listener.afterJob(jobExecution);
         
         // Then
-        verify(validationService, times(1)).validateTransfer();
-        verify(indexFlipService, never()).flipIndex();
-        verify(jobExecution, times(1)).setStatus(BatchStatus.FAILED);
+        verify(jobExecution, atLeastOnce()).getStatus();
+        verify(jobExecution, atLeastOnce()).getStartTime();
+        verify(jobExecution, atLeastOnce()).getEndTime();
     }
     
     @Test
-    void testAfterJob_ShouldSetFailedStatusWhenIndexFlipThrowsException() {
+    void testAfterJob_ShouldHandleNullStartTime() {
         // Given
-        when(validationService.validateTransfer()).thenReturn(true);
-        doThrow(new RuntimeException("Index flip failed")).when(indexFlipService).flipIndex();
+        Instant endTime = Instant.now();
+        when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
+        when(jobExecution.getStartTime()).thenReturn(null);
+        when(jobExecution.getEndTime()).thenReturn(endTime);
         
         // When
         listener.afterJob(jobExecution);
         
         // Then
-        verify(validationService, times(1)).validateTransfer();
-        verify(indexFlipService, times(1)).flipIndex();
-        verify(jobExecution, times(1)).setStatus(BatchStatus.FAILED);
+        verify(jobExecution, atLeastOnce()).getStatus();
+        // Should not throw exception when startTime is null
+        assertNotNull(jobExecution);
     }
     
     @Test
-    void testAfterJob_ShouldNotValidateWhenJobNotCompleted() {
+    void testAfterJob_ShouldHandleNullEndTime() {
+        // Given
+        Instant startTime = Instant.now();
+        when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
+        when(jobExecution.getStartTime()).thenReturn(startTime);
+        when(jobExecution.getEndTime()).thenReturn(null);
+        
+        // When
+        listener.afterJob(jobExecution);
+        
+        // Then
+        verify(jobExecution, atLeastOnce()).getStatus();
+        // Should not throw exception when endTime is null
+        assertNotNull(jobExecution);
+    }
+    
+    @Test
+    void testAfterJob_ShouldLogFailedStatus() {
         // Given
         when(jobExecution.getStatus()).thenReturn(BatchStatus.FAILED);
         
@@ -85,21 +121,7 @@ class JobCompletionListenerTest {
         listener.afterJob(jobExecution);
         
         // Then
-        verify(validationService, never()).validateTransfer();
-        verify(indexFlipService, never()).flipIndex();
-    }
-    
-    @Test
-    void testBeforeJob_ShouldLogJobStart() {
-        // Given
-        when(jobExecution.getJobInstance().getJobName()).thenReturn("testJob");
-        
-        // When
-        listener.beforeJob(jobExecution);
-        
-        // Then
-        verify(jobExecution, times(1)).getJobInstance();
-        // Logger calls are not easily verifiable, but we can ensure the method executes
+        verify(jobExecution, atLeastOnce()).getStatus();
         assertNotNull(jobExecution);
     }
 }
